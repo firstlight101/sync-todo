@@ -1,0 +1,14 @@
+# Python 虚拟环境和缓存
+.venv/
+__pycache__/
+*.pyc
+
+# 本地待办数据和配置
+data/
+.env
+.env.*
+config.local.json
+
+# 打包生成的文件
+build/
+dist/
