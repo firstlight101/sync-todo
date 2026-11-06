@@ -16,10 +16,13 @@ while True:
             print("暂无待办")
         else:
             for i in task:
-                print(i)
+                if(i['done'] == False):
+                    print('[未完成]',i['title'])
+                elif(i['done'] == True):
+                    print('[已完成]', i['title'])
     elif(oprate == '2'):
         title = input("待办标题是什么？")
-        task.append(title)
+        task.append({"title":title, "done": False})
         print('添加成功')
     else:
         print("无效选项，请重新输入")
