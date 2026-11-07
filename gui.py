@@ -1,23 +1,55 @@
 import flet as ft
-from sqlite_storage import init_db, load_task
+from sqlite_storage import init_db, load_task, insert_task
 
 def main(page: ft.Page):
     page.title = "Sync Todo"
     page.add(ft.Text("我的待办", size = 24))
 
+    title_input = ft.TextField(label="待办标题")
+    result_text = ft.Text()
+    task_column = ft.Column()
+    def refresh_tasks():
+        task_column.controls.clear()
+        task_list = load_task()
+
+        if not task_list:
+            task_column.controls.append(ft.Text("暂无待办"))
+            return
+
+        for item in task_list:
+            if item["done"]:
+                status = "[已完成]"
+            else:
+                status = "[未完成]"
+
+            task_column.controls.append(
+                ft.Text(status + " " + item["title"])
+            )
+
+    def add_clicked(e):
+        title = title_input.value.strip()
+
+        if not title:
+            result_text.value = "请输入待办标题"
+            page.update()
+            return
+        
+        insert_task(title)
+        title_input.value = ''
+        result_text.value = "添加成功"
+        refresh_tasks()
+        page.update()
+
+    page.add(
+        title_input,
+        ft.Button("添加", on_click=add_clicked),
+        result_text,
+        task_column
+    )
+
     init_db()
-    task_list = load_task()
-
-    if not task_list:
-        page.add(ft.Text("暂无待办"))
-
-    for item in task_list:
-        if item["done"]:
-            status = "[已完成]"
-        else:
-            status = "[未完成]"
-
-        page.add(ft.Text(status + ' ' + item["title"]))
+    refresh_tasks()
+    page.update()
 
 if __name__ == "__main__":
     ft.run(main)
