@@ -33,25 +33,30 @@ def mark_task(task_list):
     print('标记完成')
 
 
-task = load_task()
+def main():
+    task = load_task()
 
 
-while True:
-    print ("=== Sync Todo ===")
-    print("1.查看待办事项")
-    print("2.添加待办事项")
-    print("3.标记完成")
-    print("0.退出")
-    oprate = input("请输入选项")
-    if oprate == '0':
-        save_task(task)
-        print("再见")
-        break
-    elif oprate == '1':
-        show_tasks(task)
-    elif oprate == '2':
-        add_task(task)
-    elif oprate == '3':
-        mark_task(task)
-    else:
-        print("无效选项，请重新输入")
+    while True:
+        print ("=== Sync Todo ===")
+        print("1.查看待办事项")
+        print("2.添加待办事项")
+        print("3.标记完成")
+        print("0.退出")
+        oprate = input("请输入选项")
+        if oprate == '0':
+            save_task(task)
+            print("再见")
+            break
+        elif oprate == '1':
+            show_tasks(task)
+        elif oprate == '2':
+            add_task(task)
+        elif oprate == '3':
+            mark_task(task)
+        else:
+            print("无效选项，请重新输入")
+
+if __name__ == "__main__":
+    main()
+
