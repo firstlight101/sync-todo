@@ -1,4 +1,4 @@
-from storage import load_task, save_task
+from sqlite_storage import init_db, load_task, insert_task, complete_task
 
 
 
@@ -12,9 +12,9 @@ def show_tasks(task_list):
             elif i['done'] == True:
                 print(number, '[已完成]', i['title'])
 
-def add_task(task_list):
+def add_task():
     title = input("待办标题是什么？")
-    task_list.append({"title":title, "done": False})
+    insert_task(title)
     print('添加成功')
 
 def mark_task(task_list):
@@ -29,15 +29,15 @@ def mark_task(task_list):
     if not 1 <= num <= len(task_list):
         print('编号不存在')
         return
-    task_list[num - 1]['done'] = True
+    task_id = task_list[num-1]["id"]
+    complete_task(task_id)
     print('标记完成')
 
 
 def main():
-    task = load_task()
-
-
+    init_db()
     while True:
+        task = load_task()
         print ("=== Sync Todo ===")
         print("1.查看待办事项")
         print("2.添加待办事项")
@@ -45,13 +45,12 @@ def main():
         print("0.退出")
         oprate = input("请输入选项")
         if oprate == '0':
-            save_task(task)
             print("再见")
             break
         elif oprate == '1':
             show_tasks(task)
         elif oprate == '2':
-            add_task(task)
+            add_task()
         elif oprate == '3':
             mark_task(task)
         else:

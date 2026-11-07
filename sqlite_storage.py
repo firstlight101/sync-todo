@@ -38,8 +38,24 @@ def load_task():
     )
     rows = cursor.fetchall()
     connection.close()
-    return rows
+    task_list = []
+    for task_id, title, done in rows:
+        task_list.append({
+            "id": task_id,
+            "title": title,
+            "done": bool(done)
+        })
+    return task_list
 
+def complete_task(task_id):
+    connection = sqlite3.connect(DB_file)
+
+    connection.execute(
+        "UPDATE tasks SET done = 1 WHERE id = ?",
+        (task_id,)
+    )
+    connection.commit()
+    connection.close()
 
 if __name__ == "__main__":
     init_db()
