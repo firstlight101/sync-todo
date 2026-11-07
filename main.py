@@ -1,5 +1,4 @@
-import json
-from pathlib import Path
+from storage import load_task, save_task
 
 
 
@@ -33,22 +32,7 @@ def mark_task(task_list):
     task_list[num - 1]['done'] = True
     print('标记完成')
 
-def save_task(task_list):
-    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-    with DATA_FILE.open("w",encoding="utf-8") as file:
-        json.dump(task_list, file, ensure_ascii=False, indent=2)
-
-def load_task():
-    try:
-        with DATA_FILE.open("r", encoding="utf-8") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return []
-
-
-
-DATA_FILE = Path(__file__).resolve().parent / "data" / "task.json"
 task = load_task()
 
 
