@@ -1,7 +1,7 @@
+import json
+from pathlib import Path
 
-print ("=== Sync Todo ===")
 
-task = []
 
 def show_tasks(task_list):
     if not task_list:
@@ -33,13 +33,34 @@ def mark_task(task_list):
     task_list[num - 1]['done'] = True
     print('标记完成')
 
+def save_task(task_list):
+    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+    with DATA_FILE.open("w",encoding="utf-8") as file:
+        json.dump(task_list, file, ensure_ascii=False, indent=2)
+
+def load_task():
+    try:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+
+
+DATA_FILE = Path(__file__).resolve().parent / "data" / "task.json"
+task = load_task()
+
+
 while True:
+    print ("=== Sync Todo ===")
     print("1.查看待办事项")
     print("2.添加待办事项")
     print("3.标记完成")
     print("0.退出")
     oprate = input("请输入选项")
     if oprate == '0':
+        save_task(task)
         print("再见")
         break
     elif oprate == '1':
