@@ -57,6 +57,16 @@ def complete_task(task_id):
     connection.commit()
     connection.close()
 
+def delete_task(task_id):
+    connection = sqlite3.connect(DB_file)
+
+    connection.execute(
+        "DELETE FROM tasks WHERE id = ?",
+        (task_id,)
+    )
+    connection.commit()
+    connection.close()
+
 if __name__ == "__main__":
     init_db()
     rows = load_task()

@@ -1,5 +1,5 @@
 import flet as ft
-from sqlite_storage import init_db, load_task, insert_task, complete_task
+from sqlite_storage import init_db, load_task, insert_task, complete_task, delete_task
 
 def main(page: ft.Page):
     page.title = "Sync Todo"
@@ -11,27 +11,41 @@ def main(page: ft.Page):
     def refresh_tasks():
         task_column.controls.clear()
         task_list = load_task()
-
         if not task_list:
             task_column.controls.append(ft.Text("暂无待办"))
             return
 
         for item in task_list:
-            if item["done"]:
-                task_column.controls.append(
-                    ft.Text("[已完成]"+item["title"])
-                )
-                continue
-            button = ft.Button(
+            button_delete = ft.Button(
+                "删除",
+                data = item["id"],
+                on_click=delete_clicked
+            )
+            button_mark = ft.Button(
                 "标记完成",
                 data = item["id"],
                 on_click=mark_clicked
             )
-            row = ft.Row(controls=[
-                ft.Text("[未完成]" + item["title"], expand=True),
-                button
-            ])
+            if item["done"]:
+                row = ft.Row(controls=[
+                    ft.Text("[已完成]" + item["title"], expand = True),
+                    button_delete
+                ]
+                )
+            else:
+                row = ft.Row(controls=[
+                    ft.Text("[未完成]" + item["title"], expand=True),
+                    button_mark,
+                    button_delete
+                ])
             task_column.controls.append(row)
+
+    def delete_clicked(e):
+        task_id = e.control.data
+        delete_task(task_id)
+        result_text = "删除完成"
+        refresh_tasks()
+        page.update()
 
 
     def mark_clicked(e):
