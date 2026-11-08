@@ -1,5 +1,5 @@
 import flet as ft
-from sqlite_storage import init_db, load_task, insert_task
+from sqlite_storage import init_db, load_task, insert_task, complete_task
 
 def main(page: ft.Page):
     page.title = "Sync Todo"
@@ -18,14 +18,29 @@ def main(page: ft.Page):
 
         for item in task_list:
             if item["done"]:
-                status = "[已完成]"
-            else:
-                status = "[未完成]"
-
-            task_column.controls.append(
-                ft.Text(status + " " + item["title"])
+                task_column.controls.append(
+                    ft.Text("[已完成]"+item["title"])
+                )
+                continue
+            button = ft.Button(
+                "标记完成",
+                data = item["id"],
+                on_click=mark_clicked
             )
+            row = ft.Row(controls=[
+                ft.Text("[未完成]" + item["title"], expand=True),
+                button
+            ])
+            task_column.controls.append(row)
 
+
+    def mark_clicked(e):
+        task_id = e.control.data
+        complete_task(task_id)
+        result_text.value= "标记完成"
+        refresh_tasks()
+        page.update()
+    
     def add_clicked(e):
         title = title_input.value.strip()
 
