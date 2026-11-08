@@ -43,7 +43,7 @@ def main(page: ft.Page):
     def delete_clicked(e):
         task_id = e.control.data
         delete_task(task_id)
-        result_text = "删除完成"
+        result_text.value = "删除完成"
         refresh_tasks()
         page.update()
 
