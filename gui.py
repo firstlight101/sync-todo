@@ -1,5 +1,5 @@
 import flet as ft
-from sqlite_storage import init_db, load_task, insert_task, complete_task, delete_task
+from sqlite_storage import init_db, load_task, insert_task, complete_task, delete_task, update_task_title
 
 def main(page: ft.Page):
     page.title = "Sync Todo"
@@ -16,6 +16,11 @@ def main(page: ft.Page):
             return
 
         for item in task_list:
+            button_edit = ft.Button(
+                "编辑标题",
+                data = {"id":item["id"], "title":item["title"]},
+                on_click=edit_clicked
+            )
             button_delete = ft.Button(
                 "删除",
                 data = item["id"],
@@ -29,12 +34,14 @@ def main(page: ft.Page):
             if item["done"]:
                 row = ft.Row(controls=[
                     ft.Text("[已完成]" + item["title"], expand = True),
+                    button_edit,
                     button_delete
                 ]
                 )
             else:
                 row = ft.Row(controls=[
                     ft.Text("[未完成]" + item["title"], expand=True),
+                    button_edit,
                     button_mark,
                     button_delete
                 ])
@@ -68,6 +75,40 @@ def main(page: ft.Page):
         result_text.value = "添加成功"
         refresh_tasks()
         page.update()
+
+    def edit_clicked(e):
+        task_id = e.control.data["id"]
+        task_title = e.control.data["title"]
+        new_task_title = ft.TextField(task_title,)
+
+        def save_edited_data(e):
+            title = new_task_title.value.strip()
+            if not title:
+                new_task_title.value = ''
+                new_task_title.error="请输入待办标题"
+                page.update()
+                return
+            update_task_title(task_id, new_task_title.value)
+            result_text.value = "修改成功"
+            page.pop_dialog()
+            refresh_tasks()
+            page.update()
+
+        dialog = ft.AlertDialog(
+            title = ft.Text("修改标题"),
+            content= new_task_title,
+            actions=[
+                ft.Button(
+                    "保存", 
+                    on_click = save_edited_data
+                ),
+                ft.Button(
+                    "取消",
+                    on_click = lambda e: page.pop_dialog()
+                )
+            ]
+        )
+        page.show_dialog(dialog)
 
     page.add(
         title_input,

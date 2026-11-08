@@ -67,9 +67,21 @@ def delete_task(task_id):
     connection.commit()
     connection.close()
 
+def update_task_title(task_id, title):
+    connection = sqlite3.connect(DB_file)
+
+    connection.execute(
+        "UPDATE tasks SET title = ? WHERE id = ?",
+        (title, task_id)
+    )
+    connection.commit()
+    connection.close()
+
 if __name__ == "__main__":
     init_db()
     rows = load_task()
+    # update_task_title(4, "321")
+    # update_task_title(5, "13")
     for row in rows:
         print(row)
     # title = input("请输入待办标题")
